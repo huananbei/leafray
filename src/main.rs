@@ -2,11 +2,10 @@ extern crate rand; // https://github.com/rust-lang-nursery/rand
 use rand::Rng;
 use std::f64::consts::PI;
 
-const LEAFR: f64 = 0.05; // leaf radius [meters]
+// const LEAFR: f64 = 0.05; // leaf radius [meters]
 
 fn main() {
     let mut rng: rand::ThreadRng = rand::thread_rng();
-    let x: f64 = rng.gen(); // random number in range (0, 1)
 
     let mybox = Box {
         xmin: 0.0, xmax: 1.0,
@@ -14,12 +13,8 @@ fn main() {
         zmin: 0.0, zmax: 0.5,
     };
 
-    let leaf = random_leaf(mybox, rng);
-
-    print!("{:?}\n\n", leaf);
-
-    print!("Norm of random leaf normal: {}\n\n",
-           leaf.n.x.powi(2) + leaf.n.y.powi(2) + leaf.n.z.powi(2));
+    let leaves = random_leaf_list(5, &mybox, &mut rng);
+    print!("\n {:?}\n\n", leaves);
 
 }
 
@@ -39,7 +34,7 @@ struct Box {
     zmin: f64, zmax: f64
 }
 
-fn random_leaf(b: Box, mut rng: rand::ThreadRng) -> Leaf {
+fn random_leaf(b: &Box, rng: &mut rand::ThreadRng) -> Leaf {
     let p = Point {
         x: rng.gen_range(b.xmin,b.xmax),
         y: rng.gen_range(b.ymin,b.ymax),
@@ -55,4 +50,12 @@ fn random_leaf(b: Box, mut rng: rand::ThreadRng) -> Leaf {
         z: theta.cos()
     };
     Leaf {p: p, n: n}
+}
+
+fn random_leaf_list(n: u64, b: &Box, rng: &mut rand::ThreadRng) -> Vec<Leaf> {
+    let mut leaves: Vec<Leaf> = Vec::new();
+    for _ in 0..n {
+        leaves.push(random_leaf(&b, rng));
+    }
+    leaves
 }
