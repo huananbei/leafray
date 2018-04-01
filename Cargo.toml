@@ -1,0 +1,4 @@
+[package]
+name = "leafray"
+version = "0.0.1"
+authors = ["Sampo Smolander <sampo.smolander@alunni.helsinki.fi>"]
